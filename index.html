@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="(and Monads)" />
+  <title>Haskell</title>
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <link rel="stylesheet" href="reveal.js/css/reveal.min.css"/>
+    <style type="text/css">code{white-space: pre;}</style>
+    <style type="text/css">
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; }
+code > span.dt { color: #902000; }
+code > span.dv { color: #40a070; }
+code > span.bn { color: #40a070; }
+code > span.fl { color: #40a070; }
+code > span.ch { color: #4070a0; }
+code > span.st { color: #4070a0; }
+code > span.co { color: #60a0b0; font-style: italic; }
+code > span.ot { color: #007020; }
+code > span.al { color: #ff0000; font-weight: bold; }
+code > span.fu { color: #06287e; }
+code > span.er { color: #ff0000; font-weight: bold; }
+    </style>
+    <link rel="stylesheet" href="reveal.js/css/theme/simple.css" id="theme">
+  <link rel="stylesheet" media="print" href="reveal.js/css/print/pdf.css" />
+  <!--[if lt IE 9]>
+  <script src="reveal.js/lib/js/html5shiv.js"></script>
+  <![endif]-->
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section>
+    <h1 class="title">Haskell</h1>
+    <h2 class="author">(and Monads)</h2>
+    <h3 class="date"></h3>
+</section>
+
+<section><section id="programming-in-haskell" class="titleslide slide level1"><h1>Programming in Haskell</h1></section><section id="the-language" class="slide level2">
+<h1>The Language</h1>
+</section><section id="lazy" class="slide level2">
+<h1>Lazy</h1>
+<pre class="sourceCode literate haskell"><code class="sourceCode haskell">fst (x,y) <span class="fu">=</span> y
+fst (<span class="dv">5</span><span class="fu">+</span><span class="dv">5</span>,<span class="dv">1</span><span class="fu">+</span><span class="dv">1</span>) <span class="fu">==</span> <span class="dv">2</span></code></pre>
+<p>5+5? Never evaluated.</p>
+</section><section id="pure" class="slide level2">
+<h1>Pure</h1>
+<pre class="sourceCode literate haskell"><code class="sourceCode haskell"><span class="ot">foo ::</span> <span class="dt">Int</span> <span class="ot">-&gt;</span> <span class="dt">Int</span>
+foo i <span class="fu">=</span> putStrLn i <span class="co">--Nope</span></code></pre>
+<p>Effects outside the type are not allowed.</p>
+</section><section id="strict" class="slide level2">
+<h1>Strict</h1>
+<pre class="sourceCode literate haskell"><code class="sourceCode haskell"><span class="dt">True</span> <span class="fu">==</span> <span class="dv">1</span> <span class="co">-- Won&#39;t type check</span></code></pre>
+<p>Types are strict. Implicit coercion isn't allowed. Relations between non-matching types must be specified.</p>
+</section><section id="inferred" class="slide level2">
+<h1>Inferred</h1>
+<pre class="sourceCode literate haskell"><code class="sourceCode haskell"><span class="ot">y ::</span> <span class="dt">Int</span>
+y <span class="fu">=</span> <span class="dv">1</span> 
+f x <span class="fu">=</span> x
+f y <span class="co">-- Typechecker determines f :: Int -&gt; Int</span></code></pre>
+<p>The typechecker fills in the gaps on types for you.</p>
+</section></section>
+<section><section id="functions" class="titleslide slide level1"><h1>Functions</h1></section><section id="section" class="slide level2">
+<h1></h1>
+<pre class="sourceCode literate haskell"><code class="sourceCode haskell">f x <span class="fu">=</span> x <span class="co">--Identity</span>
+not <span class="dt">False</span> <span class="fu">=</span> <span class="dt">True</span> <span class="co">--Explicit matching</span>
+not <span class="dt">True</span>  <span class="fu">=</span> <span class="dt">False</span>
+f g x <span class="fu">=</span> g x <span class="co">-- Higher order</span></code></pre>
+</section><section id="section-1" class="slide level2">
+<h1></h1>
+<h3 id="lambdas">Lambdas</h3>
+<pre class="sourceCode literate haskell"><code class="sourceCode haskell"><span class="co">--Identity</span>
+y x <span class="fu">=</span> x
+y <span class="fu">=</span> \z <span class="ot">-&gt;</span> z 
+<span class="co">--Both of the above are equivalent to each other</span></code></pre>
+</section><section id="section-2" class="slide level2">
+<h1></h1>
+<h3 id="application">Application</h3>
+<pre class="sourceCode literate haskell"><code class="sourceCode haskell"><span class="co">--Apply incr to 1 and bind that to y</span>
+y <span class="fu">=</span> incr <span class="dv">1</span>
+<span class="co">-- y == 2</span></code></pre>
+<p>Giving a function its argument is called &quot;applying it to its argument&quot;.</p>
+</section></section>
+<section><section id="types" class="titleslide slide level1"><h1>Types</h1></section><section id="section-3" class="slide level2">
+<h1></h1>
+<h3 id="one-argument">One Argument</h3>
+<pre class="sourceCode literate haskell"><code class="sourceCode haskell"><span class="ot">incr ::</span> <span class="dt">Int</span> <span class="ot">-&gt;</span> <span class="dt">Int</span>
+incr x <span class="fu">=</span> x <span class="fu">+</span> <span class="dv">1</span></code></pre>
+</section><section id="section-4" class="slide level2">
+<h1></h1>
+<h3 id="two-arguments">Two Arguments</h3>
+<pre class="sourceCode literate haskell"><code class="sourceCode haskell"><span class="ot">add ::</span> <span class="dt">Int</span> <span class="ot">-&gt;</span> <span class="dt">Int</span> <span class="ot">-&gt;</span> <span class="dt">Int</span>
+add a b <span class="fu">=</span> a <span class="fu">+</span> b</code></pre>
+</section><section id="section-5" class="slide level2">
+<h1></h1>
+<h3 id="three-arguments">Three Arguments</h3>
+<pre class="sourceCode literate haskell"><code class="sourceCode haskell"><span class="ot">add3 ::</span> <span class="dt">Int</span> <span class="ot">-&gt;</span> <span class="dt">Int</span> <span class="ot">-&gt;</span> <span class="dt">Int</span> <span class="ot">-&gt;</span> <span class="dt">Int</span>
+add3 a b c <span class="fu">=</span> a <span class="fu">+</span> b <span class="fu">+</span> c</code></pre>
+</section><section id="section-6" class="slide level2">
+<h1></h1>
+<h3 id="partial-application">Partial Application</h3>
+<pre class="sourceCode literate haskell"><code class="sourceCode haskell"><span class="ot">incr ::</span> <span class="dt">Int</span> <span class="ot">-&gt;</span> <span class="dt">Int</span>
+incr <span class="fu">=</span> add <span class="dv">1</span></code></pre>
+<p>If a function isn't given all its all of its arguments, a new function that takes the remaining arguments is given instead of a result.</p>
+</section></section>
+<section><section id="lists" class="titleslide slide level1"><h1>Lists</h1></section><section id="section-7" class="slide level2">
+<h1></h1>
+<h3 id="similar-to-other-languages">Similar to other languages</h3>
+<pre class="sourceCode literate haskell"><code class="sourceCode haskell"><span class="ot"> x ::</span> [<span class="dt">Int</span>]
+ x <span class="fu">=</span>  [<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>]
+ <span class="co">--equivalent definition.  Empty list at the end of cons&#39;s</span>
+ x <span class="fu">=</span>  <span class="dv">1</span> <span class="fu">:</span> <span class="dv">2</span> <span class="fu">:</span> <span class="dv">3</span> <span class="fu">:</span> <span class="dv">4</span> <span class="fu">:</span> []
+ 
+ y <span class="fu">=</span> [<span class="dv">5</span>]
+
+<span class="co">-- z == [1,2,3,4,5] Append</span>
+ z <span class="fu">=</span> x <span class="fu">++</span> y </code></pre>
+</section><section id="section-8" class="slide level2">
+<h1></h1>
+<h3 id="strings-are-actually-lists-of-char">Strings are actually lists of Char</h3>
+<pre class="sourceCode literate haskell"><code class="sourceCode haskell">
+<span class="kw">type</span> <span class="dt">String</span> <span class="fu">=</span> [<span class="dt">Char</span>]
+
+<span class="co">-- &quot;abc&quot; == &#39;a&#39; : &#39;b&#39; : &#39;c&#39; : []</span></code></pre>
+<p>Above is a type synonym declaration.</p>
+</section></section>
+<section><section id="polymorphism" class="titleslide slide level1"><h1>Polymorphism</h1></section><section id="section-9" class="slide level2">
+<h1></h1>
+<h3 id="some-popular-polymorphic-type-signatures">Some popular polymorphic type signatures</h3>
+<pre class="sourceCode literate haskell"><code class="sourceCode haskell">id<span class="ot"> ::</span> a <span class="ot">-&gt;</span> a
+
+filter<span class="ot"> ::</span> (a <span class="ot">-&gt;</span> <span class="dt">Bool</span>) <span class="ot">-&gt;</span> [a] <span class="ot">-&gt;</span> [a]
+
+map<span class="ot"> ::</span> (a <span class="ot">-&gt;</span> b) <span class="ot">-&gt;</span> [a] <span class="ot">-&gt;</span> [b]</code></pre>
+</section><section id="section-10" class="slide level2">
+<h1></h1>
+<pre class="sourceCode literate haskell"><code class="sourceCode haskell"><span class="co">--Mapping over lists, most generally</span>
+map<span class="ot"> ::</span> (a <span class="ot">-&gt;</span> b) <span class="ot">-&gt;</span> [a] <span class="ot">-&gt;</span> [b]</code></pre>
+<p>Variables with the same name are one type. Variables with different names are not assumed to be the same type.</p>
+</section></section>
+<section><section id="data-types" class="titleslide slide level1"><h1>Data Types</h1></section><section id="section-11" class="slide level2">
+<h1></h1>
+<h3 id="algebraic-data-types">Algebraic Data Types</h3>
+<pre class="sourceCode literate haskell"><code class="sourceCode haskell"><span class="kw">data</span> <span class="dt">Color</span> <span class="fu">=</span> <span class="dt">Red</span> <span class="fu">|</span> <span class="dt">Green</span> <span class="fu">|</span> <span class="dt">Blue</span>
+<span class="co">--import Data.Word</span>
+<span class="co">--Word8 is an unsigned byte</span>
+<span class="co">--newtype only allows one type constructor</span>
+<span class="kw">data</span> <span class="dt">HexColor</span> <span class="fu">=</span> <span class="dt">RGB</span> <span class="dt">Word8</span> <span class="dt">Word8</span> <span class="dt">Word8</span> <span class="fu">|</span> <span class="dt">White</span> <span class="fu">|</span> <span class="dt">Black</span> <span class="co">-- ....</span>
+
+<span class="dt">RGB</span><span class="ot"> ::</span> <span class="dt">Word8</span> <span class="ot">-&gt;</span> <span class="dt">Word8</span> <span class="ot">-&gt;</span> <span class="dt">Word8</span> <span class="ot">-&gt;</span> <span class="dt">HexColor</span>
+<span class="dt">White</span><span class="ot"> ::</span> <span class="dt">HexColor</span>
+<span class="dt">Red</span><span class="ot"> ::</span> <span class="dt">Color</span></code></pre>
+<ul>
+<li>HexColor is a Type Constructor</li>
+<li>RGB is a Data Constructor that constructs a HexColor</li>
+</ul>
+</section><section id="section-12" class="slide level2">
+<h1></h1>
+<h3 id="tuples">Tuples</h3>
+<pre class="sourceCode literate haskell"><code class="sourceCode haskell"><span class="co">-- A pair tuple</span>
+(<span class="dv">5</span>,<span class="dv">6</span><span class="fu">.</span><span class="dv">0</span>)<span class="ot"> ::</span> (<span class="dt">Int</span>, <span class="dt">Double</span>)
+<span class="co">-- a 3-tuple</span>
+(<span class="st">&quot;hi&quot;</span>,<span class="dv">7</span>,<span class="ch">&#39;a&#39;</span>)<span class="ot"> ::</span> (<span class="dt">String</span>, <span class="dt">Int</span>, <span class="dt">Char</span>)</code></pre>
+<p>Tuples can be about as long as you want.</p>
+</section><section id="section-13" class="slide level2">
+<h1></h1>
+<h3 id="advanced-type-constructors">Advanced Type Constructors</h3>
+<pre class="sourceCode literate haskell"><code class="sourceCode haskell"><span class="co">-- A simple something or nothing</span>
+<span class="kw">data</span> <span class="dt">Maybe</span> a <span class="fu">=</span> <span class="dt">Nothing</span> <span class="fu">|</span> <span class="dt">Just</span> a
+<span class="co">-- Can be singly recursive like a list</span>
+<span class="kw">data</span> <span class="dt">List</span> a  <span class="fu">=</span> <span class="dt">Cons</span> a (<span class="dt">List</span> a) <span class="fu">|</span> <span class="dt">Nil</span>
+<span class="co">-- Can be doubly recursive like a tree</span>
+<span class="kw">data</span> <span class="dt">Tree</span> a  <span class="fu">=</span> <span class="dt">Node</span> (<span class="dt">Tree</span> a) a (<span class="dt">Tree</span> a) <span class="fu">|</span> <span class="dt">Leaf</span> <span class="co">--Binary Tree</span>
+<span class="co">-- Can have more than one type in our containers</span>
+<span class="kw">data</span> <span class="dt">Either</span> a b <span class="fu">=</span> <span class="dt">Left</span> a <span class="fu">|</span> <span class="dt">Right</span> b</code></pre>
+</section></section>
+<section><section id="pattern-matching" class="titleslide slide level1"><h1>Pattern Matching</h1></section><section id="section-14" class="slide level2">
+<h1></h1>
+<h3 id="can-explictly-match-with-functions">Can explictly match with functions</h3>
+<pre class="sourceCode literate haskell"><code class="sourceCode haskell"><span class="co">-- Matching a Boolean as before, explicitly</span>
+not<span class="ot"> ::</span> <span class="dt">Bool</span> <span class="ot">-&gt;</span> <span class="dt">Bool</span>
+not <span class="dt">True</span>  <span class="fu">=</span> <span class="dt">False</span> <span class="co">--True is a data constructor we match against</span>
+not <span class="dt">False</span> <span class="fu">=</span> <span class="dt">True</span>
+
+<span class="co">--List cons matching</span>
+head<span class="ot"> ::</span> [a] <span class="ot">-&gt;</span> a
+head []     <span class="fu">=</span> error <span class="st">&quot;Oh no!&quot;</span>
+head (a<span class="fu">:</span>as) <span class="fu">=</span> a
+
+<span class="ot">str_hex ::</span> <span class="dt">HexColor</span> <span class="ot">-&gt;</span> <span class="dt">String</span>
+str_hex <span class="dt">White</span> <span class="fu">=</span> <span class="st">&quot;White&quot;</span>
+str_hex <span class="dt">Black</span> <span class="fu">=</span> <span class="st">&quot;Black&quot;</span>
+<span class="co">--Lets bind the RGB values to variables</span>
+<span class="co">--Show turns things to String, more on that later</span>
+str_hex (<span class="dt">RGB</span> c1 c2 c3) <span class="fu">=</span> <span class="st">&quot;RGB &quot;</span> <span class="fu">++</span> (show c1) <span class="fu">++</span> <span class="st">&quot; &quot;</span> 
+                                <span class="fu">++</span> (show c2) <span class="fu">++</span> <span class="st">&quot; &quot;</span>
+                                <span class="fu">++</span> (show c3)</code></pre>
+</section><section id="section-15" class="slide level2">
+<h1></h1>
+<h3 id="pattern-match-failures">Pattern Match Failures</h3>
+<pre class="sourceCode literate haskell"><code class="sourceCode haskell"><span class="co">--Given some function that gets a value from Maybe a</span>
+<span class="co">--Encountering nothing will fail</span>
+<span class="ot">fromJust ::</span> <span class="dt">Maybe</span> a <span class="ot">-&gt;</span> a
+fromJust (<span class="dt">Just</span> x) <span class="fu">=</span> x
+<span class="co">--Or the list head case, empty list fails</span>
+head<span class="ot"> ::</span> [a] <span class="ot">-&gt;</span> a
+head (x<span class="fu">:</span>xs) <span class="fu">=</span> x</code></pre>
+<p>If a function can't match your patterns, the program will crash. Handling situations like this is up to the developer.</p>
+</section></section>
+<section><section id="type-classes" class="titleslide slide level1"><h1>Type Classes</h1></section><section id="section-16" class="slide level2">
+<h1></h1>
+<h3 id="overloading-ad-hoc-polymorphism">Overloading / ad-hoc Polymorphism</h3>
+<pre class="sourceCode literate haskell"><code class="sourceCode haskell"><span class="kw">class</span> <span class="dt">Show</span> a <span class="kw">where</span>
+<span class="ot">  show ::</span> a <span class="ot">-&gt;</span> <span class="dt">String</span>
+  <span class="co">--Actual Show has two other methods</span>
+  <span class="co">--But you only need show to be minimally complete</span>
+
+<span class="kw">class</span> <span class="dt">Ord</span> a <span class="kw">where</span>
+<span class="ot">  compare ::</span> a <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> <span class="dt">Ordering</span>
+<span class="ot">  (&lt;) ::</span> a <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> <span class="dt">Bool</span>
+<span class="ot">  (&gt;=) ::</span> a <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> <span class="dt">Bool</span>
+  <span class="co">--A number of others</span>
+
+<span class="kw">class</span> <span class="dt">Eq</span> a <span class="kw">where</span>
+<span class="ot">  (==) ::</span> a <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> <span class="dt">Bool</span></code></pre>
+<p>Classes in Haskell are like Interfaces in Java, Protocols in Objective-C, or abc's in Python(?).</p>
+</section><section id="section-17" class="slide level2">
+<h1></h1>
+<h3 id="instances-of-classes">Instances of classes</h3>
+<pre class="sourceCode literate haskell"><code class="sourceCode haskell"><span class="kw">instance</span> <span class="dt">Show</span> <span class="dt">Color</span> <span class="kw">where</span>
+    show <span class="dt">Red</span>   <span class="fu">=</span> <span class="st">&quot;Red&quot;</span>
+    show <span class="dt">Green</span> <span class="fu">=</span> <span class="st">&quot;Green&quot;</span>
+    show <span class="dt">Blue</span>  <span class="fu">=</span> <span class="st">&quot;Blue&quot;</span>
+<span class="co">-- Or you can derive Show to get the equivalent functionality to the above</span>
+ <span class="kw">data</span> <span class="dt">Color</span> <span class="fu">=</span> <span class="dt">Red</span> <span class="fu">|</span> <span class="dt">Green</span> <span class="fu">|</span> <span class="dt">Blue</span> <span class="kw">deriving</span> (<span class="dt">Show</span>)
+<span class="co">-- This only works if you have nullary constructors OR, all types for each</span>
+<span class="co">-- constructor are themselves already in Show (basic types usually are)</span></code></pre>
+</section></section>
+<section><section id="monads" class="titleslide slide level1"><h1>Monads</h1></section><section id="section-18" class="slide level2">
+<h1></h1>
+<h3 id="problems-with-pure-haskell">Problems with &quot;pure&quot; Haskell</h3>
+<ul>
+<li>Sequenced operations are handy and we want them</li>
+<li>Sharing results between separate computations is awkward</li>
+<li>Side Effects Remain an issue we need to track somehow</li>
+</ul>
+</section><section id="section-19" class="slide level2">
+<h1></h1>
+<h3 id="enter-the-monad">Enter the Monad</h3>
+<pre class="sourceCode literate haskell"><code class="sourceCode haskell"><span class="kw">class</span> <span class="dt">Monad</span> m <span class="kw">where</span>
+<span class="ot">   return ::</span> a <span class="ot">-&gt;</span> m a
+<span class="ot">   (&gt;&gt;=)  ::</span> m a <span class="ot">-&gt;</span> (a <span class="ot">-&gt;</span> m b) <span class="ot">-&gt;</span> m b
+<span class="ot">   (&gt;&gt;)   ::</span> m a <span class="ot">-&gt;</span> m b <span class="ot">-&gt;</span> m b
+   <span class="co">-- (&gt;&gt;) is (&gt;&gt;=) such that a &gt;&gt;= (\_ -&gt; b)</span>
+   <span class="co">-- We&#39;ll ignore it from here on</span></code></pre>
+<p>Monads are &quot;contexts in which we can run computations&quot; that have particular useful traits that allow us to model side-effects in a meaningful way.</p>
+<p>Monads are wrapper types like the ones that we saw earlier (Maybe a).</p>
+</section><section id="section-20" class="slide level2">
+<h1></h1>
+<h3 id="return">Return</h3>
+<pre class="sourceCode literate haskell"><code class="sourceCode haskell">return<span class="ot"> ::</span> a <span class="ot">-&gt;</span> m a</code></pre>
+<ol type="1">
+<li>Return takes a value and wraps it in the context of the monad.<br /></li>
+<li>Enables you to place values into a monad so you can use them inside the monad.</li>
+</ol>
+</section><section id="section-21" class="slide level2">
+<h1></h1>
+<h3 id="bind">Bind</h3>
+<pre class="sourceCode literate haskell"><code class="sourceCode haskell"><span class="ot">(&gt;&gt;=) ::</span> m a <span class="ot">-&gt;</span> (a <span class="ot">-&gt;</span> m b)</code></pre>
+<ol type="1">
+<li>Runs the monad on the left to get its result of type a</li>
+<li>Gives that result to the function on the right</li>
+<li>Constructs continuting monadic function to run</li>
+</ol>
+<pre class="sourceCode literate haskell"><code class="sourceCode haskell">m a <span class="fu">&gt;&gt;=</span> (a <span class="ot">-&gt;</span> m b) <span class="fu">&gt;&gt;=</span> (b <span class="ot">-&gt;</span> m c)<span class="ot"> ::</span> m c</code></pre>
+</section><section id="section-22" class="slide level2">
+<h1></h1>
+<h3 id="the-monad-laws">The Monad Laws</h3>
+<p>Anything that is an instance of Monad must obey the following laws</p>
+<p>Left Identity</p>
+<pre class="sourceCode literate haskell"><code class="sourceCode haskell">return a <span class="fu">&gt;&gt;=</span> f <span class="fu">~=</span> f a</code></pre>
+<p>Right Identity</p>
+<pre class="sourceCode literate haskell"><code class="sourceCode haskell">m <span class="fu">&gt;&gt;=</span> return <span class="fu">~=</span> m</code></pre>
+<p>Associativity</p>
+<pre class="sourceCode literate haskell"><code class="sourceCode haskell">(m <span class="fu">&gt;&gt;=</span> f) <span class="fu">&gt;&gt;=</span> g  <span class="fu">~=</span> m <span class="fu">&gt;&gt;=</span> (\x <span class="ot">-&gt;</span> f x <span class="fu">&gt;&gt;=</span> g)</code></pre>
+</section><section id="section-23" class="slide level2">
+<h1></h1>
+<figure>
+<img src="./images/Typeclassopedia-diagram.png" alt="Monads in the Typeclassopedia" /><figcaption>Monads in the Typeclassopedia</figcaption>
+</figure>
+</section><section id="so-lets-try-something" class="slide level2">
+<h1>So Let's try something</h1>
+</section></section>
+<section><section id="conclusion" class="titleslide slide level1"><h1>Conclusion</h1></section><section id="section-24" class="slide level2">
+<h1></h1>
+<h3 id="cool-if-you-dont-normally-use-it">Cool if you don't normally use it</h3>
+<ul>
+<li>Forces you to rethink patterns you forgot were patterns</li>
+<li>Makes you more aware of the computational power you require</li>
+<li>Gets you back in the types realm ;-)</li>
+</ul>
+</section><section id="section-25" class="slide level2">
+<h1></h1>
+<h3 id="popular-haskell-applicationsstacks">Popular Haskell Applications/Stacks</h3>
+<ul>
+<li>Web: Yesod, Snap, Happstack, aeson, Heist, Scotty, websockets</li>
+<li>PL Parsers: Parsec</li>
+<li>Symbolic Reasoning: SBV</li>
+<li>Parallel/Concurrency: Parallel Package, STM</li>
+<li>Data Processing: Conduit, Pipes</li>
+<li>Bonus Points: Lenses, Comonads</li>
+</ul>
+</section><section id="section-26" class="slide level2">
+<h1></h1>
+<h3 id="resources">Resources</h3>
+<ul>
+<li><a href="http://www.haskell.org/haskellwiki/Haskell">Haskell Wiki</a></li>
+<li><a href="http://learnyouahaskell.com/">Learn You a Haskell</a></li>
+<li><a href="http://book.realworldhaskell.org/">Real World Haskell</a></li>
+<li><a href="http://www.haskell.org/hoogle/">Hoogle</a></li>
+<li><a href="http://ocharles.org.uk/blog/">24 Days of Hackage</a></li>
+</ul>
+</section><section id="thanks" class="slide level2">
+<h1>Thanks!</h1>
+</section></section>
+    </div>
+  </div>
+
+  <script src="reveal.js/lib/js/head.min.js"></script>
+  <script src="reveal.js/js/reveal.min.js"></script>
+
+  <script>
+
+      // Full list of configuration options available here:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        controls: true,
+        progress: true,
+        history: true,
+        center: true,
+        theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+        transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+
+        // Optional libraries used to extend on reveal.js
+        dependencies: [
+          { src: 'reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: 'reveal.js/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+          { src: 'reveal.js/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } },
+//          { src: 'reveal.js/plugin/search/search.js', async: true, condition: function() { return !!document.body.classList; }, }
+//          { src: 'reveal.js/plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+]});
+    </script>
+  </body>
+</html>

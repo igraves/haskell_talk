@@ -1,0 +1,5 @@
+inotifywait -r -m -e attrib Slides/ | 
+while read dir ev file; do
+  ./build
+  echo "Updated index.html"
+done

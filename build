@@ -1,0 +1,4 @@
+#!/bin/bash
+
+pandoc -t revealjs -f markdown+lhs --slide-level=2 -s Slides/*.lhs -o index.html
+
