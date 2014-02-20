@@ -1,6 +1,6 @@
 haskell_talk
 ============
-
+For the actual slides [go here.](http://igraves.github.io/haskell_talk)
 
 This is the Haskell talk put together for the February 19th, 2014 dev/como session.
 
